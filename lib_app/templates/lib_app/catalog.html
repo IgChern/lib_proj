@@ -1,0 +1,93 @@
+{% extends "lib_app/base.html" %} 
+{% block title %}lib app{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+  <h2>Список книг</h2>
+  <p><mark>Всего книг: {{ page_obj.paginator.count }}</mark></p>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Название</th>
+        <th>Автор</th>
+        <th>Жанр</th>
+        <th>Действие</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <th>{{ forloop.counter }}</th>
+        <td>{{ book.title }}
+            <span id="book-title-{{ book.id }}"></span>
+            <button type="button" class="btn btn-link p-0" onclick="copyToClipboard('{{ book.title }}')" title="Копировать">
+              📋
+            </button>
+        </td>
+        <td>
+          {% for author in book.authors.all %} 
+            {{ author.name }}
+            {% if not forloop.last %}, {% endif %} 
+          {% endfor %}
+        </td>
+        <td>
+          {% for genre in book.genre.all %} 
+            {{ genre.get_genre_name_display }}
+            {% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+        <td>
+            {% if book.available %}
+                <form method="post" action="{% url 'lib:borrow_or_return' book.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Взять</button>
+                </form>
+            {% else %}
+                <button type="submit" class="btn btn-secondary" disabled>Взять</button>
+            {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav aria-label="...">
+    <ul class="pagination">
+      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+        <a
+          class="btn btn-primary"
+          style="margin-right: 10px"
+          href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}"
+          tabindex="-1"
+        >Назад</a>
+      </li>
+      <li class="page-item disabled">
+        <a class="page-link" href="#">{{ page_obj.number }}</a>
+      </li>
+      <li class="page-item disabled"><a class="page-link" href="#">/</a></li>
+      <li class="page-item disabled">
+        <a class="page-link" style="margin-right: 10px" href="#">{{ page_obj.paginator.num_pages }}</a>
+      </li>
+      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+        <a
+          class="btn btn-primary"
+          href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}"
+        >Вперед</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(function() {
+        alert('Название книги скопировано: ' + text);
+      }, function(err) {
+        console.error('Ошибка копирования: ', err);
+      });
+    }
+  </script>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "lib_app/base.html" %}
+
+{% block title %}Мои книги{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+  <h2>Мои книги</h2>
+  {% if my_books %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Название</th>
+          <th>Дата взятия</th>
+          <th>Всего дней</th>
+          <th>Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for borrowed_book in my_books %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ borrowed_book.book.title }}</td>
+          <td>{{ borrowed_book.borrowed_date }}</td>
+          <td>{{ borrowed_book.days_on_hand }} дней</td>
+          <td>
+            <form method="post" action="{% url 'lib:borrow_or_return' borrowed_book.book.id %}">
+                {% csrf_token %}
+                {% if not borrowed_book.returned_date %}
+                <button type="submit" class="btn btn-secondary">Вернуть книгу</button>
+                {% endif %}
+            </form>
+        </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+  {% else %}
+    <p>У вас нет взятых книг.</p>
+  {% endif %}
+</div>
+{% endblock %}

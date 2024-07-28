@@ -1,0 +1,15 @@
+{% extends "lib_app/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block login_form %}
+    <form method="post">
+        <div class="center-block">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-secondary">Войти</button>
+        </div>
+    </form>
+{% endblock %}

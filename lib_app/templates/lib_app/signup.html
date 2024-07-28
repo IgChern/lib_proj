@@ -1,0 +1,15 @@
+{% extends "lib_app/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %} Регистрация {% endblock %}
+
+{% block signup_form %}
+    <form method="post">
+        <div class="center-block">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn btn-secondary">Регистрация</button>
+        </div>
+    </form>
+{% endblock %}

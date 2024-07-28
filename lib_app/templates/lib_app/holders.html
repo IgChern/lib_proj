@@ -1,0 +1,35 @@
+{% extends "lib_app/base.html" %}
+
+{% block title %}Список должников{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+  <h2>Список должников</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Адрес</th>
+        <th>Название книги</th>
+        <th>Дата получения книги</th>
+        <th>Количество дней</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for holder in holders %}
+        <tr>
+          <td>{{ holder.user.username }}</td>
+          <td>{{ holder.user.first_name }}</td>
+          <td>{{ holder.user.last_name }}</td>
+          <td>{{ holder.user.student.address }}</td>
+          <td>{{ holder.book.title }}</td>
+          <td>{{ holder.borrowed_date }}</td>
+          <td>{{ holder.days_on_hand }} дней</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
